@@ -49,7 +49,7 @@ export default function Home() {
   return (
     <main className="min-h-screen bg-gradient-to-b from-background via-background to-accent/5">
       <BubbleMenu
-        logo={<span style={{ fontWeight: 700 }}>uniCLIQ</span>}
+        logo={<span style={{ fontWeight: 800, fontFamily: "Puddles", fontSize: "2rem" }}>uniCLIQ</span>}
         items={items}
         menuAriaLabel="Toggle navigation"
         menuBg="#ffffff"
@@ -58,6 +58,9 @@ export default function Home() {
         animationEase="back.out(1.5)"
         animationDuration={0.5}
         staggerDelay={0.12}
+        onMenuClick={() => {}}
+        className=""
+        style={{}}
       />
         <Hero />
         <StudentGrid />

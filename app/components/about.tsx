@@ -1,7 +1,7 @@
 "use client"
 
 import { motion } from "framer-motion"
-import { Play } from "lucide-react"
+import Image from "next/image"
 
 export function About() {
   const containerVariants = {
@@ -44,7 +44,7 @@ export function About() {
   }
 
   return (
-    <section className="relative w-full bg-gradient-to-b from-white to-background py-16 md:py-24 lg:py-32 overflow-hidden">
+    <section id="about" className="relative w-full bg-gradient-to-b from-white to-background py-16 md:py-24 lg:py-32 overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div
           className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center"
@@ -58,7 +58,7 @@ export function About() {
             {/* Main Image */}
             <div className="relative w-full max-w-sm">
               <div className="">
-                <img src="https://res.cloudinary.com/dklqsfwcu/image/upload/v1762281749/splash2_bq9lx2.png" alt="Student creator" className="w-full h-full object-cover" />
+                <Image src="https://res.cloudinary.com/dklqsfwcu/image/upload/v1762281749/splash2_bq9lx2.png" alt="Student creator" className="object-cover" width={500} height={900} />
               </div>
 
               {/* Play Button Overlay */}
@@ -71,7 +71,7 @@ export function About() {
               </motion.button> */}
 
               {/* +200% Badge */}
-              <motion.div
+              {/* <motion.div
                 className="absolute -top-2 -right-4 bg-white rounded-2xl shadow-xl px-4 py-3"
                 variants={floatVariants}
                 animate={{ y: [0, -10, 0] }}
@@ -82,7 +82,7 @@ export function About() {
                 </div>
                 <p className="text-2xl font-bold text-foreground">+200%</p>
                 <p className="text-xs text-muted-foreground">Views in 24h</p>
-              </motion.div>
+              </motion.div> */}
 
               {/* Bottom Right Badge */}
               {/* <motion.div
@@ -117,17 +117,16 @@ export function About() {
             </motion.h2>
 
             {/* Description */}
-            <motion.p variants={itemVariants} className="text-lg text-muted-foreground max-w-md leading-relaxed">
-              Transform your student stories into shoppable moments. Create content that inspires and enables your
-              community to shop, learn, and connect all in one place.
+            <motion.p variants={itemVariants} className="text-lg text-black max-w-md leading-relaxed">
+             At uniCLIQ, we believe every connection can spark opportunity. Our mission is to make student collaboration effortless — empowering learners to meet, build, and grow together. In today’s world, networking is everything, and we’re making sure that starts on campus.
             </motion.p>
 
             {/* Features List */}
             <motion.div variants={containerVariants} className="space-y-3 pt-4">
               {[
-                "Direct shop integration in stories",
-                "Real-time engagement analytics",
-                "Build your creator community",
+                "Find colleagues by geofencing",
+                "Get real-time event updates",
+                "Connect across campuses",
               ].map((feature, i) => (
                 <motion.div key={i} variants={itemVariants} className="flex items-center gap-3">
                   <div className="w-2 h-2 rounded-full bg-primary" />

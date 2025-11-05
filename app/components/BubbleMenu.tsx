@@ -13,7 +13,7 @@ const DEFAULT_ITEMS = [
   },
   {
     label: 'about',
-    href: '#',
+    href: '#about',
     ariaLabel: 'About',
     rotation: 8,
     hoverStyles: { bgColor: '#10b981', textColor: '#ffffff' }
@@ -41,6 +41,30 @@ const DEFAULT_ITEMS = [
   }
 ];
 
+interface BubbleMenuProps {
+  logo: React.ReactNode;
+  onMenuClick?: (isOpen: boolean) => void;
+  className?: string;
+  style?: React.CSSProperties;
+  menuAriaLabel?: string;
+  menuBg?: string;
+  menuContentColor?: string;
+  useFixedPosition?: boolean;
+  items?: {
+    label: string;
+    href: string;
+    ariaLabel: string;
+    rotation: number;
+    hoverStyles: {
+      bgColor: string;
+      textColor: string;
+    };
+  }[];
+  animationEase?: string;
+  animationDuration?: number;
+  staggerDelay?: number;
+}
+
 export default function BubbleMenu({
   logo,
   onMenuClick,
@@ -54,13 +78,13 @@ export default function BubbleMenu({
   animationEase = 'back.out(1.5)',
   animationDuration = 0.5,
   staggerDelay = 0.12
-}) {
+}: BubbleMenuProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [showOverlay, setShowOverlay] = useState(false);
 
-  const overlayRef = useRef(null);
-  const bubblesRef = useRef([]);
-  const labelRefs = useRef([]);
+  const overlayRef = useRef<HTMLDivElement | null>(null);
+  const bubblesRef = useRef<Array<HTMLAnchorElement | null>>([]);
+  const labelRefs = useRef<Array<HTMLSpanElement | null>>([]);
 
   const menuItems = items?.length ? items : DEFAULT_ITEMS;
   const containerClassName = ['bubble-menu', useFixedPosition ? 'fixed' : 'absolute', className]
@@ -190,7 +214,7 @@ export default function BubbleMenu({
                     '--pill-color': menuContentColor,
                     '--hover-bg': item.hoverStyles?.bgColor || '#f3f4f6',
                     '--hover-color': item.hoverStyles?.textColor || menuContentColor
-                  }}
+                  } as React.CSSProperties & Record<string, string | number>}
                   ref={el => {
                     if (el) bubblesRef.current[idx] = el;
                   }}
