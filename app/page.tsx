@@ -5,6 +5,7 @@ import { Hero } from "./components/hero";
 import { StudentGrid } from "./components/student-grid";
 import { CustomDemo } from "./components/Stack";
 import { About } from "./components/about";
+import { Rollout } from "./components/rollout";
 
 export default function Home() {
 
@@ -65,6 +66,7 @@ export default function Home() {
         <Hero />
         <StudentGrid />
           <About />
+          {/* <Rollout/> */}
     </main>
   )
 }
