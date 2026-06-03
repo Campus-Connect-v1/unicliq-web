@@ -16,19 +16,19 @@
 }
 
 :root {
-  /* Updated color scheme for uniCLIQ - vibrant Gen Z aesthetic */
+  /* uniCLIQ student-community palette */
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.145 0 0);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0); /* Vibrant purple */
+  --primary: #003554;
   --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0); /* Warm coral/peach */
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0); /* Vibrant teal */
-  --accent-foreground: oklch(0.205 0 0);
+  --secondary: #f7c948;
+  --secondary-foreground: #123140;
+  --muted: #eef6f9;
+  --muted-foreground: #526675;
+  --accent: #1f8a70;
+  --accent-foreground: #ffffff;
   --destructive: oklch(0.577 0.245 27.325);
   --destructive-foreground: oklch(0.577 0.245 27.325);
   --border: oklch(0.922 0 0);
@@ -48,8 +48,8 @@
   --sidebar-accent-foreground: oklch(0.205 0 0);
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
+  --background: #ffffff;
+  --foreground: #081f2d;
 }
 
 .dark {
@@ -134,5 +134,45 @@
   }
   body {
     @apply bg-background text-foreground;
+  }
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body.bubble-menu-open {
+  overflow: hidden;
+}
+
+.site-content {
+  transition:
+    filter 0.35s ease,
+    transform 0.35s ease,
+    opacity 0.35s ease;
+  transform-origin: top center;
+}
+
+.site-content.nav-open {
+  filter: blur(14px);
+  opacity: 0.74;
+  pointer-events: none;
+  transform: scale(0.985);
+}
+
+a,
+button {
+  -webkit-tap-highlight-color: transparent;
+}
+
+@media (max-width: 640px) {
+  h1,
+  h2,
+  h3,
+  p,
+  span,
+  a,
+  button {
+    overflow-wrap: anywhere;
   }
 }

@@ -1,5 +1,4 @@
-import { useState, useRef, useEffect } from 'react';
-import { gsap } from 'gsap';
+import { useCallback, useState, useEffect } from 'react';
 
 import './BubbleMenu.css';
 
@@ -74,17 +73,9 @@ export default function BubbleMenu({
   menuBg = '#fff',
   menuContentColor = '#111',
   useFixedPosition = false,
-  items,
-  animationEase = 'back.out(1.5)',
-  animationDuration = 0.5,
-  staggerDelay = 0.12
+  items
 }: BubbleMenuProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [showOverlay, setShowOverlay] = useState(false);
-
-  const overlayRef = useRef<HTMLDivElement | null>(null);
-  const bubblesRef = useRef<Array<HTMLAnchorElement | null>>([]);
-  const labelRefs = useRef<Array<HTMLSpanElement | null>>([]);
 
   const menuItems = items?.length ? items : DEFAULT_ITEMS;
   const containerClassName = ['bubble-menu', useFixedPosition ? 'fixed' : 'absolute', className]
@@ -93,94 +84,49 @@ export default function BubbleMenu({
 
   const handleToggle = () => {
     const nextState = !isMenuOpen;
-    if (nextState) setShowOverlay(true);
     setIsMenuOpen(nextState);
     onMenuClick?.(nextState);
   };
 
-  useEffect(() => {
-    const overlay = overlayRef.current;
-    const bubbles = bubblesRef.current.filter(Boolean);
-    const labels = labelRefs.current.filter(Boolean);
-
-    if (!overlay || !bubbles.length) return;
-
-    if (isMenuOpen) {
-      gsap.set(overlay, { display: 'flex' });
-      gsap.killTweensOf([...bubbles, ...labels]);
-      gsap.set(bubbles, { scale: 0, transformOrigin: '50% 50%' });
-      gsap.set(labels, { y: 24, autoAlpha: 0 });
-
-      bubbles.forEach((bubble, i) => {
-        const delay = i * staggerDelay + gsap.utils.random(-0.05, 0.05);
-        const tl = gsap.timeline({ delay });
-
-        tl.to(bubble, {
-          scale: 1,
-          duration: animationDuration,
-          ease: animationEase
-        });
-        if (labels[i]) {
-          tl.to(
-            labels[i],
-            {
-              y: 0,
-              autoAlpha: 1,
-              duration: animationDuration,
-              ease: 'power3.out'
-            },
-            `-=${animationDuration * 0.9}`
-          );
-        }
-      });
-    } else if (showOverlay) {
-      gsap.killTweensOf([...bubbles, ...labels]);
-      gsap.to(labels, {
-        y: 24,
-        autoAlpha: 0,
-        duration: 0.2,
-        ease: 'power3.in'
-      });
-      gsap.to(bubbles, {
-        scale: 0,
-        duration: 0.2,
-        ease: 'power3.in',
-        onComplete: () => {
-          gsap.set(overlay, { display: 'none' });
-          setShowOverlay(false);
-        }
-      });
-    }
-  }, [isMenuOpen, showOverlay, animationEase, animationDuration, staggerDelay]);
+  const closeMenu = useCallback(() => {
+    setIsMenuOpen(false);
+    onMenuClick?.(false);
+  }, [onMenuClick]);
 
   useEffect(() => {
-    const handleResize = () => {
-      if (isMenuOpen) {
-        const bubbles = bubblesRef.current.filter(Boolean);
-        const isDesktop = window.innerWidth >= 900;
+    document.body.classList.toggle('bubble-menu-open', isMenuOpen);
 
-        bubbles.forEach((bubble, i) => {
-          const item = menuItems[i];
-          if (bubble && item) {
-            const rotation = isDesktop ? (item.rotation ?? 0) : 0;
-            gsap.set(bubble, { rotation });
-          }
-        });
-      }
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') closeMenu();
     };
 
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, [isMenuOpen, menuItems]);
+    window.addEventListener('keydown', handleKeyDown);
+    return () => {
+      document.body.classList.remove('bubble-menu-open');
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [isMenuOpen, closeMenu]);
 
   return (
     <>
       <nav className={containerClassName} style={style} aria-label="Main navigation">
-        <div className="bubble logo-bubble" aria-label="Logo" style={{ background: menuBg }}>
+        <a className="bubble logo-bubble" href="#home" aria-label="uniCLIQ home" style={{ background: menuBg }}>
           <span className="logo-content">
             {typeof logo === 'string' ? <img src={logo} alt="Logo" className="bubble-logo" /> : logo}
           </span>
+        </a>
+
+        <div className="desktop-link-row" aria-label="Primary links">
+          {menuItems.map((item) => (
+            <a key={item.href} href={item.href} className="desktop-link">
+              {item.label}
+            </a>
+          ))}
         </div>
+
+        <a className="desktop-cta" href="#download">
+          Get early access
+        </a>
 
         <button
           type="button"
@@ -194,45 +140,27 @@ export default function BubbleMenu({
           <span className="menu-line short" style={{ background: menuContentColor }} />
         </button>
       </nav>
-      {showOverlay && (
-        <div
-          ref={overlayRef}
-          className={`bubble-menu-items ${useFixedPosition ? 'fixed' : 'absolute'}`}
-          aria-hidden={!isMenuOpen}
-        >
-          <ul className="pill-list" role="menu" aria-label="Menu links">
-            {menuItems.map((item, idx) => (
-              <li key={idx} role="none" className="pill-col">
-                <a
-                  role="menuitem"
-                  href={item.href}
-                  aria-label={item.ariaLabel || item.label}
-                  className="pill-link"
-                  style={{
-                    '--item-rot': `${item.rotation ?? 0}deg`,
-                    '--pill-bg': menuBg,
-                    '--pill-color': menuContentColor,
-                    '--hover-bg': item.hoverStyles?.bgColor || '#f3f4f6',
-                    '--hover-color': item.hoverStyles?.textColor || menuContentColor
-                  } as React.CSSProperties & Record<string, string | number>}
-                  ref={el => {
-                    if (el) bubblesRef.current[idx] = el;
-                  }}
-                >
-                  <span
-                    className="pill-label"
-                    ref={el => {
-                      if (el) labelRefs.current[idx] = el;
-                    }}
-                  >
-                    {item.label}
-                  </span>
-                </a>
-              </li>
-            ))}
-          </ul>
+      <div className={`mobile-menu-panel ${isMenuOpen ? 'open' : ''}`} aria-hidden={!isMenuOpen}>
+        <div className="mobile-menu-inner">
+          <p className="mobile-menu-kicker">Campus menu</p>
+          {menuItems.map((item, idx) => (
+            <a
+              key={item.href}
+              href={item.href}
+              aria-label={item.ariaLabel || item.label}
+              className="mobile-menu-link"
+              onClick={closeMenu}
+              style={{ '--link-accent': item.hoverStyles?.bgColor || '#003554', '--item-index': idx } as React.CSSProperties & Record<string, string | number>}
+            >
+              <span>{item.label}</span>
+              <span className="mobile-link-count">0{idx + 1}</span>
+            </a>
+          ))}
+          <a className="mobile-menu-cta" href="#download" onClick={closeMenu}>
+            Join the waitlist
+          </a>
         </div>
-      )}
+      </div>
     </>
   );
 }

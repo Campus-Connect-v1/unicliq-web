@@ -125,7 +125,6 @@ interface StudentCardProps {
 }
 
 export function StudentCard({
-  id,
   name,
   major,
   image,
@@ -148,7 +147,7 @@ export function StudentCard({
       transition={{ duration: 0.5 }}
       viewport={{ once: true, margin: "-50px" }}
       whileHover={{ y: -8 }}
-      className={`group relative rounded-2xl overflow-hidden cursor-pointer shadow-lg hover:shadow-2xl transition-shadow ${sizeClasses[size]}`}
+      className={`group relative rounded-[2rem] overflow-hidden cursor-pointer shadow-lg hover:shadow-2xl transition-shadow ${sizeClasses[size]}`}
     >
       {/* Background Color */}
       <div className="absolute inset-0 z-0" style={{ backgroundColor: bgColor }} />
@@ -188,7 +187,7 @@ export function StudentCard({
           initial={{ opacity: 0, scale: 0.8 }}
           whileInView={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.4, delay: 0.2 }}
-          className="absolute top-3 right-3 z-30 bg-accent/90 backdrop-blur-sm text-white px-3 py-1 rounded-full text-xs font-semibold flex items-center gap-1"
+          className="absolute top-3 right-3 z-30 bg-[#003554]/90 backdrop-blur-sm text-white px-3 py-1 rounded-full text-xs font-semibold flex items-center gap-1"
         >
           <span className="w-2 h-2 bg-white rounded-full animate-pulse" />
           {badge.label}
